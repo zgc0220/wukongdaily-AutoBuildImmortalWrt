@@ -5,7 +5,6 @@ echo "第三方软件包: $CUSTOM_PACKAGES"
 LOGFILE="/tmp/uci-defaults-log.txt"
 echo "Starting 99-custom.sh at $(date)" >> $LOGFILE
 echo "编译固件大小为: $PROFILE MB"
-echo "Include Docker: $INCLUDE_DOCKER"
 
 if [ -z "$CUSTOM_PACKAGES" ]; then
   echo "⚪️ 未选择 任何第三方软件包"
