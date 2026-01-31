@@ -3,6 +3,7 @@
 source shell/custom-packages.sh
 echo "第三方软件包: $CUSTOM_PACKAGES"
 LOGFILE="/tmp/uci-defaults-log.txt"
+OPENCLASH_LAST_VERSION_FILE="/tmp/openclash_last_version"
 echo "Starting 99-custom.sh at $(date)" >> $LOGFILE
 echo "编译固件大小为: $PROFILE MB"
 
@@ -22,6 +23,12 @@ else
   ls -lh /home/build/immortalwrt/extra-packages/*.run
   # 解压并拷贝ipk到packages目录
   sh shell/prepare-packages.sh
+
+  echo "OpenClash使用dev版本"
+  wget -q https://raw.githubusercontent.com/vernesong/OpenClash/package/dev/version -O $OPENCLASH_LAST_VERSION_FILE
+  OP_LV=$(sed -n 1p $OPENCLASH_LAST_VERSION_FILE 2>/dev/null |awk -F 'v' '{print $2}' 2>/dev/null)
+  wget -q https://raw.githubusercontent.com/vernesong/OpenClash/package/dev/luci-app-openclash_${OP_LV}_all.ipk -O /home/build/immortalwrt/packages/luci-app-openclash_${OP_LV}_all.ipk
+
   ls -lah /home/build/immortalwrt/packages/
 fi
 
@@ -60,7 +67,7 @@ if echo "$PACKAGES" | grep -q "luci-app-openclash"; then
     META_URL="https://raw.githubusercontent.com/vernesong/OpenClash/core/dev/smart/clash-linux-amd64.tar.gz"
     wget -qO- $META_URL | tar xOvz > files/etc/openclash/core/clash_meta
     chmod +x files/etc/openclash/core/clash_meta
-    # Download GeoIP and GeoSite
+    # Download GeoIP and GeoSite and Model
     wget -q https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat -O files/etc/openclash/GeoIP.dat
     wget -q https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat -O files/etc/openclash/GeoSite.dat
     wget -q https://github.com/vernesong/mihomo/releases/download/LightGBM-Model/Model-large.bin -O files/etc/openclash/Model.bin
